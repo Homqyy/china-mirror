@@ -6,6 +6,10 @@ use Test::More tests => 1;
 use FindBin qw($Bin);
 
 # running docker: alpine
-my $result = `docker run -q --rm -v '$Bin/../:/root/china-mirror:ro' -w '/root/china-mirror' alpine sh ./os.sh >> /dev/null && echo -n "ok"`;
+my $result = `docker run -q --rm \
+    -v '$Bin/../:/china-mirror:ro' \
+    -w '/china-mirror' \
+    alpine \
+    sh ./os.py >> /dev/null && echo -n "ok"`;
 
 is($result, "ok", "alpine (os.sh)");
