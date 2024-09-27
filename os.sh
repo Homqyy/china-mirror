@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 g_root_dir=$(cd "$(dirname "$0")"; pwd)
 g_core_dir=$g_root_dir/core
