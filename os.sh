@@ -5,7 +5,7 @@ g_core_dir=$g_root_dir/core
 
 . $g_core_dir/basic.sh
 
-function usage() {
+function usage {
     cat <<EOF
 Usage: $0 [options]
 Options:
