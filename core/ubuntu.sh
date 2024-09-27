@@ -4,7 +4,7 @@ G_UBUNTU_VERSION_2004="20.04"
 G_UBUNTU_VERSION_2204="22.04"
 
 # get ubuntu version
-function ubuntu_get_version() {
+function ubuntu_get_version {
     if [ -f /etc/os-release ]; then
         . /etc/os-release
         echo $VERSION_ID
@@ -17,7 +17,7 @@ function ubuntu_get_version() {
     fi
 }
 
-function ubuntu_backup_repos() {
+function ubuntu_backup_repos {
     [ -f /etc/apt/sources.list ] \
         && mv /etc/apt/sources.list /etc/apt/sources.list.bak
     [ -d /etc/apt/sources.list.d/ ] \

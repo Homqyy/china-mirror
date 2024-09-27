@@ -7,7 +7,7 @@ G_DISTNAME_ALPINE="alpine"
 G_DISTNAME_REDHAT="redhat"
 
 
-function get_distname() {
+function get_distname {
     distname=""
     if [ -f /etc/os-release ]; then
         . /etc/os-release
