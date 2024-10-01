@@ -30,9 +30,37 @@ function check_env {
     return $failure
 }
 
+function uninstall {
+    dist_name=$1
+
+    if [ $dist_name == $G_DISTNAME_UBUNTU ]; then
+        if [ $g_dry_run -ne 1 ]; then
+            rm -f /etc/apt/sources.list.d/kubernetes.list
+            rm -f /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+        else
+            echo "rm -f /etc/apt/sources.list.d/kubernetes.list"
+            echo "rm -f /etc/apt/keyrings/kubernetes-apt-keyring.gpg"
+        fi
+    else
+        echo "Unsupported Linux Distribution"
+        exit 1
+    fi
+
+    exit 0
+}
+
 function install_deps {
-    apt-get update
-    apt-get install -y apt-transport-https ca-certificates curl gnupg
+    dist_name=$1
+
+    if [ $dist_name == $G_DISTNAME_UBUNTU ]; then
+        apt-get update
+        apt-get install -y apt-transport-https ca-certificates curl gnupg
+    else
+        echo "Unsupported Linux Distribution"
+        return 1
+    fi
+
+    return 0
 }
 
 function add_k8s_repo {
@@ -53,6 +81,19 @@ EOF
     fi
 }
 
+function install_packages {
+    dist_name=$1
+    packages=("${@:2}")
+
+    if [ $dist_name == $G_DISTNAME_UBUNTU ]; then
+        apt-get update
+        apt-get install -y ${packages[@]}
+    else
+        echo "Unsupported Linux Distribution"
+        return 1
+    fi
+}
+
 function usage {
     cat <<EOF
 Usage: $0 [options]
@@ -61,6 +102,7 @@ Options:
     --debug                         Enable debug mode
     --dry-run                       Dry run mode
     -h, --help                      Show this help message and exit
+    --package <kubectl|kubeadm>     Install k8s package, can multiple
     --uninstall                     Uninstall repos and keys
     -v, --version <VERSION>         Version of k8s, default is 'v1.30'
     -y, --yes                       Assume yes
@@ -71,6 +113,7 @@ EOF
 CONF_DRIVER="docker"
 CONF_VERSION="v1.30"
 CONF_UNINSTALL=0
+delare -a CONF_PACKAGES
 
 while [ $# -gt 0 ]; do
     case $1 in
@@ -90,6 +133,11 @@ while [ $# -gt 0 ]; do
         -h|--help)
             usage
             exit 0
+            ;;
+        --package)
+            shift
+            CONF_PACKAGES+=($1)
+            shift
             ;;
         --uninstall)
             CONF_UNINSTALL=1
@@ -119,16 +167,21 @@ if [ $CONF_DRIVER != "docker" ] && [ $CONF_DRIVER != "crio" ]; then
     exit 1
 fi
 
+# check packages
+for pkg in ${CONF_PACKAGES[@]}; do
+    if [ $pkg != "kubectl" ] && [ $pkg != "kubeadm" ]; then
+        echo "Invalid package: $pkg"
+        usage
+        exit 1
+    fi
+done
+
+dist_name=$(get_distname)
+echo "Detected Linux Distribution: $dist_name"
+
 if [ $CONF_UNINSTALL -eq 1 ]; then
     echo "Uninstalling k8s sources and keys"
-    if [ $g_dry_run -ne 1 ]; then
-        rm -f /etc/apt/sources.list.d/kubernetes.list
-        rm -f /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-    else
-        echo "rm -f /etc/apt/sources.list.d/kubernetes.list"
-        echo "rm -f /etc/apt/keyrings/kubernetes-apt-keyring.gpg"
-    fi
-    exit 0
+    uninstall $dist_name
 fi
 
 if check_env; then
@@ -137,7 +190,8 @@ else
     echo "Environment check: Failed"
     # ask for installing dependencies
     if [ $g_assume_yes -eq 1 ]; then
-        install_deps
+        install_deps $dist_name \
+            || exit 1
     else
         read -p "Do you want to install dependencies? [Y/n] " choice
         case $choice in
@@ -146,7 +200,8 @@ else
                 exit 1
                 ;;
             y|Y|"")
-                install_deps
+                install_deps $dist_name \
+                    || exit 1
                 ;;
             *)
                 echo "Invalid choice"
@@ -156,10 +211,7 @@ else
     fi
 fi
 
-dist_name=$(get_distname)
-
-echo "Detected Linux Distribution: $dist_name"
-
+# add k8s sources
 if [ $dist_name == $G_DISTNAME_UBUNTU ]; then
     # import GPG key
     if [ -e /etc/apt/keyrings/kubernetes-apt-keyring.gpg ]; then
@@ -216,4 +268,9 @@ if [ $dist_name == $G_DISTNAME_UBUNTU ]; then
 else
     echo "Unsupported Linux Distribution";
     exit 1
+fi
+
+# install k8s packages
+if [ ${#CONF_PACKAGES[@]} -gt 0 ]; then
+    install_packages $dist_name ${CONF_PACKAGES[@]}
 fi
