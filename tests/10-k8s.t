@@ -1,6 +1,6 @@
 use warnings;
 use strict;
-use Test::More tests => 9;
+use Test::More tests => 8;
 
 # get bin path
 use FindBin qw($Bin);
