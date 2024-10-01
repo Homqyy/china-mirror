@@ -14,7 +14,7 @@ sub test_ubuntu($;) {
 
     $cmd = "docker run --rm -qv $project_dir:/china-mirror" .
         " ubuntu:$version" .
-        " bash -c 'bash /china-mirror/docker-ce.sh'";
+        " bash -c 'bash /china-mirror/docker-ce.sh --no-interaction'";
     print "test cmd: $cmd\n";
     is(system($cmd), 0, "ubuntu $version");
 }

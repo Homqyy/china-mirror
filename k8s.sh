@@ -4,9 +4,11 @@ g_root_dir=$(cd "$(dirname "$0")"; pwd)
 g_core_dir=$g_root_dir/core
 
 . $g_core_dir/basic.sh
+. $g_core_dir/ubuntu.sh
 
 g_dry_run=0
 g_assume_yes=0
+g_no_interaction=0
 
 function check_env {
     if [ $EUID -ne 0 ]; then
@@ -102,6 +104,7 @@ Options:
     --debug                         Enable debug mode
     --dry-run                       Dry run mode
     -h, --help                      Show this help message and exit
+    --no-interaction                No interaction mode
     --package <kubectl|kubeadm>     Install k8s package, can multiple
     --uninstall                     Uninstall repos and keys
     -v, --version <VERSION>         Version of k8s, default is 'v1.30'
@@ -133,6 +136,10 @@ while [ $# -gt 0 ]; do
         -h|--help)
             usage
             exit 0
+            ;;
+        --no-interaction)
+            g_no_interaction=1
+            shift
             ;;
         --package)
             shift
@@ -178,6 +185,16 @@ done
 
 dist_name=$(get_distname)
 echo "Detected Linux Distribution: $dist_name"
+
+if [ $g_no_interaction -eq 1 ]; then
+    echo "No interaction mode"
+    if [ $dist_name == $G_DISTNAME_UBUNTU ]; then
+        ubuntu_no_interactive
+    else
+        echo "Unsupported Linux Distribution"
+        exit 1
+    fi
+fi
 
 if [ $CONF_UNINSTALL -eq 1 ]; then
     echo "Uninstalling k8s sources and keys"

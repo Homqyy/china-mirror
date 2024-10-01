@@ -24,3 +24,7 @@ function ubuntu_backup_repos {
         && mv /etc/apt/sources.list.d/ /etc/apt/sources.list.d.bak \
         && mkdir -p /etc/apt/sources.list.d/
 }
+
+function ubuntu_no_interactive {
+    export DEBIAN_FRONTEND=noninteractive
+}

@@ -8,6 +8,7 @@ g_assets_dir=$g_root_dir/assets
 . $g_core_dir/ubuntu.sh
 
 g_dry_run=0
+g_no_interaction=0
 
 # Functions ##################################################################
 
@@ -21,9 +22,6 @@ function check_env {
 }
 
 function install_for_ubuntu {
-    # no interactive
-    export DEBIAN_FRONTEND=noninteractive
-
     # remove old versions
     for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; 
     do 
@@ -111,11 +109,14 @@ function usage {
 Usage: $0 [options]
 Options:
     --debug                         Enable debug mode
+    --no-interaction                No interaction mode
     -h, --help                      Display this help and exit
 EOF
 }
 
 # Main #######################################################################
+
+# parse command line arguments
 
 while [ $# -gt 0 ]; do
     case $1 in
@@ -126,6 +127,10 @@ while [ $# -gt 0 ]; do
         -h|--help)
             usage
             exit 0
+            ;;
+        --no-interaction)
+            g_no_interaction=1
+            shift
             ;;
         *)
             echo "Unknown option: $1"
@@ -142,6 +147,11 @@ dist_name=$(get_distname)
 echo "Detected distribution: $dist_name"
 
 if [ $dist_name == $G_DISTNAME_UBUNTU ]; then
+    if [ $g_no_interaction -eq 1 ]; then
+        echo "No interaction mode"
+        ubuntu_no_interactive
+    fi
+
     install_for_ubuntu
 
     if [ $? -eq 0 ]; then

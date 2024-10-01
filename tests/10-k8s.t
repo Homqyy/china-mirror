@@ -13,7 +13,7 @@ sub test_ubuntu($;) {
     my $version = shift;
     $cmd = "docker run --rm -qv $project_dir:/china-mirror" .
         " ubuntu:$version" .
-        " bash -c 'bash /china-mirror/k8s.sh -y && apt-get update'";
+        " bash -c 'bash /china-mirror/k8s.sh -y --no-interaction && apt-get update'";
     print "test cmd: $cmd\n";
     is(system($cmd), 0, "ubuntu $version");
 }
