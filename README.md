@@ -30,7 +30,7 @@ sudo bash ./os.sh
 
 | 命令 | 工具 | 版本 | 支持的操作系统 |
 | --- | --- | --- | --- |
-| bash ./docker-ce.sh    | docker    | -         | Ubuntu |
+| bash ./docker-ce.sh    | docker    | -         | Ubuntu 20.04,22.04,23.04,24.04 |
 | bash ./k8s.sh          | kubectl   | -         | Ubuntu |
 | bash ./pypi.sh         | pip       | -         | -      |
 

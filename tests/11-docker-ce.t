@@ -1,6 +1,6 @@
 use warnings;
 use strict;
-use Test::More tests => 5;
+use Test::More tests => 4;
 
 # get bin path
 use FindBin qw($Bin);
@@ -20,7 +20,7 @@ sub test_ubuntu($;) {
 }
 
 &test_ubuntu("20.04");
-&test_ubuntu("21.04");
+# &test_ubuntu("21.04");
 &test_ubuntu("22.04");
 &test_ubuntu("23.04");
 &test_ubuntu("24.04");
