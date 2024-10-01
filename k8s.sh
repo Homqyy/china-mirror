@@ -11,13 +11,6 @@ g_assume_yes=0
 g_no_interaction=0
 
 function check_env {
-    if [ $EUID -ne 0 ]; then
-        echo "This script must be run as root"
-        exit 1
-    else
-        echo "check Privilege: OK"
-    fi
-
     # check dependencies: apt-transport-https ca-certificates curl gnupg
     failure=0
     for dep in apt-transport-https ca-certificates curl gnupg; do
@@ -194,6 +187,14 @@ if [ $g_no_interaction -eq 1 ]; then
         echo "Unsupported Linux Distribution"
         exit 1
     fi
+fi
+
+# check privilege
+if [ $EUID -ne 0 ]; then
+    echo "This script must be run as root"
+    exit 1
+else
+    echo "check Privilege: OK"
 fi
 
 if [ $CONF_UNINSTALL -eq 1 ]; then
