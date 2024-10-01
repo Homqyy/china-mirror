@@ -18,6 +18,7 @@
 
 | 命令 | 工具 | 版本 | 支持的操作系统 |
 | --- | --- | --- | --- |
+| bash ./docker-ce.sh    | docker    | -         | Ubuntu |
 | bash ./k8s.sh          | kubectl   | -         | Ubuntu |
 | bash ./pypi.sh         | pip       | -         | -      |
 
