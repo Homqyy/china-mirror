@@ -113,7 +113,7 @@ EOF
 CONF_DRIVER="docker"
 CONF_VERSION="v1.30"
 CONF_UNINSTALL=0
-delare -a CONF_PACKAGES
+declare -a CONF_PACKAGES
 
 while [ $# -gt 0 ]; do
     case $1 in
