@@ -1,0 +1,15 @@
+name: Auto Test
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v3
+    - name: Test
+      run: |
+        prove ./tests
