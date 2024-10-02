@@ -1,6 +1,10 @@
 # china-mirror
 
-一键替换各种中国镜像源
+一键替换各种中国镜像源。
+
+镜像源参阅：
+
+- [清华大学开源软件镜像站](https://mirrors.tuna.tsinghua.edu.cn/help/)
 
 ## 支持替换列表
 
