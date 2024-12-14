@@ -18,11 +18,18 @@ function ubuntu_get_version {
 }
 
 function ubuntu_backup_repos {
+    inherit_subrepos=$1
+
     [ -f /etc/apt/sources.list ] \
         && mv /etc/apt/sources.list /etc/apt/sources.list.bak
-    [ -d /etc/apt/sources.list.d/ ] \
-        && mv /etc/apt/sources.list.d/ /etc/apt/sources.list.d.bak \
-        && mkdir -p /etc/apt/sources.list.d/
+
+    if [ -n "$inherit_subrepos" ]; then
+        echo "Inherit subrepos"
+    else
+        [ -d /etc/apt/sources.list.d/ ] \
+            && mv /etc/apt/sources.list.d/ /etc/apt/sources.list.d.bak \
+            && mkdir -p /etc/apt/sources.list.d/
+    fi
 }
 
 function ubuntu_no_interactive {

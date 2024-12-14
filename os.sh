@@ -66,7 +66,7 @@ elif [ $dist_name == $G_DISTNAME_UBUNTU ]; then
     if [ $CONF_DRY_RUN -ne 1 ]; then
         # 22.04
         if [ "$version" == "$G_UBUNTU_VERSION_2204" ]; then
-            ubuntu_backup_repos
+            ubuntu_backup_repos inherit
 
             cat > /etc/apt/sources.list <<EOF
 # 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
@@ -86,7 +86,7 @@ deb http://security.ubuntu.com/ubuntu/ jammy-security main restricted universe m
 # # deb-src http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-proposed main restricted universe multiverse
 EOF
         elif [ "$version" == "$G_UBUNTU_VERSION_2004" ]; then
-            ubuntu_backup_repos
+            ubuntu_backup_repos inherit
 
             cat > /etc/apt/sources.list <<EOF
 # 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
